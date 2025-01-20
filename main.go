@@ -42,7 +42,8 @@ func main() {
 		addProfiles(profilesPath)
 	case "list":
 		listProfiles(profilesPath)
-	case "delete"
+	case "delete":
+		deleteProfile(profilesPath, 0)
 	default:
 		fmt.Println("ERROR Unknow command: ", command)
 	}
@@ -69,7 +70,7 @@ func createConfigFolder(path string) {
 func buildConfigPath() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR getting home dir %s", err)
+		fmt.Fprintf(os.Stderr, "ERROR getting home dir %s\n", err)
 		os.Exit(1)
 		return ""
 	}
@@ -104,4 +105,24 @@ func addProfiles(profilesPath string) {
 
 func listProfiles(profilesPath string) {
 	fmt.Println("TODO list profiles")
+	data, err := os.ReadFile(profilesPath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR while reading file: %s error: %s\n", profilesPath, err)
+		os.Exit(1)
+	}
+
+	var profiles []Profile
+	err = yaml.Unmarshal(data, &profiles)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR error while unmarshal error: %s\n", err)
+		os.Exit(1)
+	}
+
+	for id, profile := range profiles {
+		fmt.Printf("Id : %d, Name: %s, email %s\n", id, profile.Name, profile.Email)
+	}
+}
+
+func deleteProfile(profilePath string, id int) {
+
 }
