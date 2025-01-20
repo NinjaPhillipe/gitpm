@@ -103,7 +103,7 @@ func addProfiles(profilesPath string) {
 	}
 }
 
-func listProfiles(profilesPath string) {
+func readFile(profilesPath string) []Profile {
 	fmt.Println("TODO list profiles")
 	data, err := os.ReadFile(profilesPath)
 	if err != nil {
@@ -117,6 +117,12 @@ func listProfiles(profilesPath string) {
 		fmt.Fprintf(os.Stderr, "ERROR error while unmarshal error: %s\n", err)
 		os.Exit(1)
 	}
+	return profiles
+}
+
+func listProfiles(profilesPath string) {
+
+	profiles := readFile(profilesPath)
 
 	for id, profile := range profiles {
 		fmt.Printf("Id : %d, Name: %s, email %s\n", id, profile.Name, profile.Email)
