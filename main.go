@@ -18,8 +18,6 @@ func main() {
 
 	command := args[1]
 
-	fmt.Println("Debug ", args)
-
 	path := buildConfigPath()
 
 	if !configFolderExist(path) {
@@ -44,7 +42,8 @@ func main() {
 		id := toInt(args[2], "expect a correct id to set")
 		setProfile(profilesPath, id)
 	default:
-		fmt.Println("ERROR Unknow command: ", command)
+		fmt.Fprintf(os.Stderr, "ERROR Unknow command %s\n", command)
+		os.Exit(1)
 	}
 
 }
@@ -80,8 +79,9 @@ func listProfiles(profilesPath string) {
 }
 
 func display(profiles []Profile) {
+	fmt.Printf("%-4s | %-15s | %-40s\n", "ID", "NAME", "EMAIL")
 	for id, profile := range profiles {
-		fmt.Printf("Id : %d, Name: %s, email %s\n", id, profile.Name, profile.Email)
+		fmt.Printf("%-4d | %-15s | %-40s\n", id, profile.Name, profile.Email)
 	}
 }
 
