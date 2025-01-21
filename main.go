@@ -40,7 +40,7 @@ func main() {
 	case "help":
 		displayHelp()
 	case "add":
-		addProfiles(profilesPath)
+		addProfiles(profilesPath, Profile{Name: args[2], Email: args[3]})
 	case "list":
 		listProfiles(profilesPath)
 	case "rm":
@@ -94,18 +94,14 @@ func displayHelp() {
 	fmt.Println("command: help list add")
 }
 
-func addProfiles(profilesPath string) {
+func addProfiles(profilesPath string, newProfile Profile) {
 
-	profiles := []Profile{
-		{Name: "Alice", Email: "alice@mail.com"},
-		{Name: "Bob", Email: "bob@mail.com"},
-	}
+	profiles := readFile(profilesPath)
 
-	save(profilesPath, profiles)
+	save(profilesPath, append(profiles, newProfile))
 }
 
 func readFile(profilesPath string) []Profile {
-	fmt.Println("TODO list profiles")
 	data, err := os.ReadFile(profilesPath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR while reading file: %s error: %s\n", profilesPath, err)
