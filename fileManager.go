@@ -36,6 +36,13 @@ func createConfigFolder(path string) {
 }
 
 func readFile(profilesPath string) []Profile {
+
+	// case when file does not exist
+	_, err := os.Stat(profilesPath)
+	if os.IsNotExist(err) {
+		return []Profile{}
+	}
+
 	data, err := os.ReadFile(profilesPath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR while reading file: %s error: %s\n", profilesPath, err)
