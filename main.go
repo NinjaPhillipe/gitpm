@@ -63,7 +63,7 @@ func displayHelp() {
 	fmt.Println("  add NAME EMAIL    Add a profile with the specified name and email")
 	fmt.Println("  list              Display all profiles")
 	fmt.Println("  rm ID             Remove a profile with the specified ID")
-
+	fmt.Println("  set ID            Set git local profile with data of the specified ID")
 }
 
 func addProfiles(profilesPath string, newProfile Profile) {
