@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"gopkg.in/yaml.v3"
 )
@@ -42,12 +43,22 @@ func main() {
 		addProfiles(profilesPath)
 	case "list":
 		listProfiles(profilesPath)
-	case "delete":
-		deleteProfile(profilesPath, 0)
+	case "rm":
+		id := toInt(args[2], "expect a correct id to remove")
+		rmProfile(profilesPath, id)
 	default:
 		fmt.Println("ERROR Unknow command: ", command)
 	}
 
+}
+
+func toInt(input string, errMsg string) int {
+	num, err := strconv.Atoi(input)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR %s is not an int %s\n", input, errMsg)
+		os.Exit(1)
+	}
+	return num
 }
 
 func configFolderExist(path string) bool {
@@ -90,17 +101,7 @@ func addProfiles(profilesPath string) {
 		{Name: "Bob", Email: "bob@mail.com"},
 	}
 
-	data, err := yaml.Marshal(profiles)
-	if err != nil {
-		fmt.Println("Error serializing to YAML", err)
-		return
-	}
-
-	err = os.WriteFile(profilesPath, data, 0644)
-	if err != nil {
-		fmt.Println("Error writing to file: ", err)
-		return
-	}
+	save(profilesPath, profiles)
 }
 
 func readFile(profilesPath string) []Profile {
@@ -121,14 +122,46 @@ func readFile(profilesPath string) []Profile {
 }
 
 func listProfiles(profilesPath string) {
-
 	profiles := readFile(profilesPath)
+	display(profiles)
+}
 
+func display(profiles []Profile) {
 	for id, profile := range profiles {
 		fmt.Printf("Id : %d, Name: %s, email %s\n", id, profile.Name, profile.Email)
 	}
 }
 
-func deleteProfile(profilePath string, id int) {
+func save(profilesPath string, profiles []Profile) {
 
+	data, err := yaml.Marshal(profiles)
+	if err != nil {
+		fmt.Println("Error serializing to YAML", err)
+		return
+	}
+
+	err = os.WriteFile(profilesPath, data, 0644)
+	if err != nil {
+		fmt.Println("Error writing to file: ", err)
+		os.Exit(1)
+	}
+}
+
+func remove(slice []Profile, s int) []Profile {
+	return append(slice[:s], slice[s+1:]...)
+}
+
+func rmProfile(profilesPath string, id int) {
+	profiles := readFile(profilesPath)
+
+	if id >= len(profiles) {
+		fmt.Printf("No profile for id: %d", id)
+		return
+	}
+
+	profiles = remove(profiles, id)
+
+	display(profiles)
+
+	save(profilesPath, profiles)
 }
