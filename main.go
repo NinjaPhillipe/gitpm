@@ -55,9 +55,12 @@ func toInt(input string, errMsg string) int {
 }
 
 func displayHelp() {
-	// TODO see sub menu help
-	fmt.Println("TODO HELP MENU")
-	fmt.Println("command: help list add")
+	fmt.Println("Usage:")
+	fmt.Println("  help              Display this help message")
+	fmt.Println("  add NAME EMAIL    Add a profile with the specified name and email")
+	fmt.Println("  list              Display all profiles")
+	fmt.Println("  rm ID             Remove a profile with the specified ID")
+
 }
 
 func addProfiles(profilesPath string, newProfile Profile) {
